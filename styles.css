@@ -1,0 +1,48 @@
+/* Custom Styles for 3D Flip Cards & Animations */
+
+/* Perspective container for 3D effect */
+.flip-card {
+    perspective: 1000px;
+}
+
+/* Inner card rotator */
+.flip-card-inner {
+    transform-style: preserve-3d;
+}
+
+/* Flipped state toggle class */
+.flip-card.flipped .flip-card-inner,
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Front & Back positioning */
+.flip-card-front, .flip-card-back {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+/* Back rotation */
+.flip-card-back {
+    transform: rotateY(180deg);
+}
+
+/* Glow Shadow utilities */
+.glow-cyan {
+    box-shadow: 0 0 35px -5px rgba(6, 182, 212, 0.3);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #000000;
+}
+::-webkit-scrollbar-thumb {
+    background: #164e63;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #06b6d4;
+}
