@@ -1,811 +1,767 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeVisit AI | Validación Inteligente de EPP para Visitas Hospitalarias</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#ecfeff',
-                            100: '#cffafe',
-                            400: '#22d3ee',
-                            500: '#06b6d4',
-                            600: '#0891b2',
-                            900: '#164e63',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SafeVisit AI · Hospital Las Higueras</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-gradient: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+      --accent-cyan: #06b6d4;
+      --bg-dark: #050811;
+      --bg-card: #0b1324;
+      --bg-surface: #101c36;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-cyan: rgba(6, 182, 212, 0.35);
+      --success: #10b981;
+      --danger: #ef4444;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --radius-full: 9999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Inter', -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      padding-bottom: 40px;
+    }
+
+    /* ================= NAVBAR ================= */
+    .navbar {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(5, 8, 17, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(2, 132, 199, 0.15);
+      border: 1.5px solid var(--accent-cyan);
+      box-shadow: 0 0 16px rgba(6, 182, 212, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .brand-text h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+    .brand-text span {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+    }
+    .nav-toggle {
+      width: 40px;
+      height: 40px;
+      background: transparent;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+    .nav-toggle span {
+      width: 22px;
+      height: 2px;
+      background: #f8fafc;
+      border-radius: 2px;
+    }
+
+    /* ================= APP CONTAINER ================= */
+    .app-section {
+      width: 100%;
+      max-width: 480px;
+      margin: 16px auto 24px;
+      padding: 0 16px;
+    }
+
+    .device-wrapper {
+      background: #ffffff;
+      border-radius: 36px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 0 4px #1e293b, 0 0 0 6px rgba(6, 182, 212, 0.3);
+      height: 680px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      color: #0f172a;
+    }
+
+    /* Device internal header */
+    .device-status-bar {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      background: #ffffff;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .device-screen {
+      flex: 1;
+      overflow-y: auto;
+      background: #f8fafc;
+      display: none;
+      flex-direction: column;
+      padding: 16px;
+      animation: fadeIn 0.2s ease;
+    }
+    .device-screen.active {
+      display: flex;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.99); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Botón Abrir Pantalla Completa */
+    .fullscreen-btn {
+      margin-top: 14px;
+      width: 100%;
+      height: 50px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: var(--primary-gradient);
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(2, 132, 199, 0.45);
+      transition: all 0.2s;
+    }
+    .fullscreen-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* ================= PANTALLAS INTERNAS DE LA APP ================= */
+    .app-pill {
+      align-self: flex-start;
+      background: #e0f2fe;
+      color: #0284c7;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 99px;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .app-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .app-sub {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 2px;
+      margin-bottom: 12px;
+    }
+
+    /* Selector de aislamiento */
+    .iso-chips {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .iso-chip {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .iso-chip.selected {
+      border-color: #0284c7;
+      background: #f0f9ff;
+    }
+    .iso-chip .icon { font-size: 20px; }
+    .iso-chip .label { font-size: 11px; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .iso-chip.selected .label { color: #0284c7; }
+
+    /* Summary Card */
+    .app-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .app-btn-primary {
+      width: 100%;
+      height: 48px;
+      background: #0284c7;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Scanner UI */
+    .cam-box {
+      height: 250px;
+      background: #090d16;
+      border-radius: 16px;
+      border: 2px solid #334155;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .cam-laser {
+      position: absolute;
+      top: 40%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #06b6d4;
+      box-shadow: 0 0 10px #06b6d4;
+      animation: laserAnim 2.4s ease-in-out infinite alternate;
+    }
+    @keyframes laserAnim {
+      0% { top: 15%; }
+      100% { top: 85%; }
+    }
+    .cam-silhouette {
+      width: 120px;
+      height: 170px;
+      border: 2px dashed rgba(255, 255, 255, 0.35);
+      border-radius: 60px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ai-tag-box {
+      position: absolute;
+      border: 1.5px solid #10b981;
+      background: rgba(16, 185, 129, 0.2);
+      border-radius: 4px;
+      padding: 2px 5px;
+      font-size: 8px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .ai-box-n95 { top: 18px; width: 75px; text-align: center; }
+    .ai-box-gown { top: 65px; width: 95px; height: 75px; text-align: center; }
+
+    /* Checklist row */
+    .chk-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .chk-item {
+      background: #fff;
+      border: 1.5px solid #10b981;
+      border-radius: 10px;
+      padding: 6px 2px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .chk-item.off {
+      border-color: #ef4444;
+      background: #fee2e2;
+    }
+    .chk-item .name { font-size: 9px; font-weight: 700; color: #0f172a; }
+    .chk-item.off .name { color: #991b1b; }
+
+    /* ================= SECCIÓN MAPA Y CONTACTO ================= */
+    .info-section {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    .map-frame {
+      width: 100%;
+      height: 240px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      margin-bottom: 20px;
+    }
+    .map-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .contact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+    .contact-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(2, 132, 199, 0.15);
+      border: 1px solid var(--border-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .contact-content h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+    .contact-content p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .contact-content .subtext {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .btn-route {
+      width: 100%;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background: var(--primary-gradient);
+      color: #ffffff;
+      border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      margin-top: 6px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+    }
+
+    /* Floating Chat Bubble */
+    .chat-bubble {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--primary-gradient);
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      cursor: pointer;
+      z-index: 999;
+      transition: all 0.2s;
+    }
+    .chat-bubble:hover {
+      transform: scale(1.06);
+    }
+    .status-dot {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 14px;
+      height: 14px;
+      background: #10b981;
+      border: 2.5px solid var(--bg-dark);
+      border-radius: 50%;
+    }
+  </style>
 </head>
-<body class="bg-black text-slate-100 font-['Plus_Jakarta_Sans',sans-serif] antialiased overflow-x-hidden relative selection:bg-cyan-500 selection:text-black">
+<body>
 
-    <!-- Background Particle Effect Layer -->
-    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-30">
-        <div class="absolute top-10 left-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div class="absolute bottom-10 right-10 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+  <!-- ================= NAVBAR ================= -->
+  <header class="navbar">
+    <div class="brand-group">
+      <div class="brand-icon-box">🛡️</div>
+      <div class="brand-text">
+        <h1>SafeVisit AI</h1>
+        <span>HOSPITAL PROTOCOL</span>
+      </div>
     </div>
+    <button class="nav-toggle" onclick="alert('SafeVisit AI · Sistema de Bioseguridad Hospital Las Higueras')">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
 
-    <!-- NAVBAR -->
-    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-md bg-black/60 border-b border-cyan-500/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Brand Logo -->
-                <a href="#" class="flex items-center space-x-3 group">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-cyan-400 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition duration-300">
-                        <div class="w-full h-full bg-black rounded-[10px] flex items-center justify-center">
-                            <i class="fa-solid fa-shield-halved text-cyan-400 text-lg group-hover:scale-110 transition duration-300"></i>
-                        </div>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-xl font-extrabold tracking-tight text-white group-hover:text-cyan-400 transition">SafeVisit <span class="text-cyan-400">AI</span></span>
-                        <span class="text-[10px] uppercase tracking-widest text-slate-400 -mt-1 font-semibold">Hospital Protocol</span>
-                    </div>
-                </a>
+  <!-- ================= SIMULADOR MÓVIL (CORREGIDO Y ACTIVO) ================= -->
+  <main class="app-section">
+    <div id="deviceShell" class="device-wrapper">
+      
+      <!-- Status bar -->
+      <div class="device-status-bar">
+        <span>09:41</span>
+        <span>🛡️ Esclusa Box 4B</span>
+        <span>🔋 98%</span>
+      </div>
 
-                <!-- Desktop Nav Navigation -->
-                <nav class="hidden md:flex items-center space-x-8">
-                    <a href="#servicios" class="text-sm font-medium text-slate-300 hover:text-cyan-400 transition">Servicios</a>
-                    <a href="#nuestra-ia" class="text-sm font-medium text-slate-300 hover:text-cyan-400 transition">Nuestra IA</a>
-                    <a href="#machine-learning" class="text-sm font-medium text-slate-300 hover:text-cyan-400 transition">Proyecto ML</a>
-                    <a href="#testimonios" class="text-sm font-medium text-slate-300 hover:text-cyan-400 transition">Casos de Éxito</a>
-                    <a href="#ubicacion" class="text-sm font-medium text-slate-300 hover:text-cyan-400 transition">Dónde Estamos</a>
-                </nav>
+      <!-- Pantalla 1: Home Selector -->
+      <div id="screen-home" class="device-screen active">
+        <div class="app-pill">HOSPITAL LAS HIGUERAS</div>
+        <h2 class="app-title">Bienvenida, Tania</h2>
+        <p class="app-sub">Selecciona el aislamiento de la sala para validar tu EPP.</p>
 
-                <!-- Desktop CTA Button -->
-                <div class="hidden md:flex items-center space-x-4">
-                    <button onclick="openDemoModal()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-sm shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-95 transition duration-200">
-                        Probar Demo IA
-                    </button>
-                </div>
-
-                <!-- Mobile Hamburger Menu Button -->
-                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 focus:outline-none">
-                    <i class="fa-solid fa-bars text-xl"></i>
-                </button>
-            </div>
+        <!-- Selector -->
+        <div class="iso-chips">
+          <div class="iso-chip" onclick="setIso('contacto', this)">
+            <div class="icon">🧤</div>
+            <div class="label">Contacto</div>
+          </div>
+          <div class="iso-chip selected" onclick="setIso('gotitas', this)">
+            <div class="icon">💧</div>
+            <div class="label">Gotitas</div>
+          </div>
+          <div class="iso-chip" onclick="setIso('aereo', this)">
+            <div class="icon">💨</div>
+            <div class="label">Aéreo</div>
+          </div>
         </div>
 
-        <!-- Mobile Navigation Drawer -->
-        <div id="mobile-menu" class="hidden md:hidden bg-slate-950/95 border-b border-cyan-500/20 backdrop-blur-xl px-4 pt-2 pb-6 space-y-3">
-            <a href="#servicios" class="block py-2 text-base font-medium text-slate-300 hover:text-cyan-400">Servicios</a>
-            <a href="#nuestra-ia" class="block py-2 text-base font-medium text-slate-300 hover:text-cyan-400">Nuestra IA</a>
-            <a href="#machine-learning" class="block py-2 text-base font-medium text-slate-300 hover:text-cyan-400">Proyecto ML</a>
-            <a href="#testimonios" class="block py-2 text-base font-medium text-slate-300 hover:text-cyan-400">Casos de Éxito</a>
-            <a href="#ubicacion" class="block py-2 text-base font-medium text-slate-300 hover:text-cyan-400">Dónde Estamos</a>
-            <button onclick="openDemoModal()" class="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-center text-sm shadow-lg shadow-cyan-500/25">
-                Probar Demo IA
-            </button>
-        </div>
-    </header>
-
-    <!-- HERO SECTION -->
-    <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="grid lg:grid-cols-12 gap-12 items-center">
-                
-                <!-- Hero Text Column -->
-                <div class="lg:col-span-7 text-center lg:text-left space-y-8">
-                    <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 text-xs sm:text-sm font-medium shadow-inner">
-                        <span class="flex h-2 w-2 rounded-full bg-cyan-400 animate-ping"></span>
-                        <span>🛡️ Bioseguridad Hospitalaria Autónoma</span>
-                    </div>
-
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-none">
-                        Validación Inteligente de <span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-500 bg-clip-text text-transparent">EPP para Visitantes</span>
-                    </h1>
-
-                    <p class="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
-                        Solución basada en Visión Artificial que escanea en segundos a los familiares antes de ingresar a áreas de aislamiento hospitalario. Verificación automática de protocolos sin fricciones ni sobrecarga clínica.
-                    </p>
-
-                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-                        <a href="#nuestra-ia" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-base shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-[1.02] active:scale-95 transition text-center">
-                            Ver App en Vivo <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
-                        </a>
-                        <a href="#servicios" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-200 font-semibold text-base transition text-center hover:bg-slate-800">
-                            Explorar Funcionalidades
-                        </a>
-                    </div>
-
-                    <!-- Micro Social Proof -->
-                    <div class="pt-6 border-t border-slate-900 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-slate-400 text-xs sm:text-sm">
-                        <div class="flex items-center space-x-2">
-                            <i class="fa-solid fa-check-circle text-cyan-400"></i>
-                            <span>Normativa IAAS Cumplida</span>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <i class="fa-solid fa-bolt text-cyan-400"></i>
-                            <span>Escaneo en &lt; 3 Segundos</span>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <i class="fa-solid fa-hospital text-cyan-400"></i>
-                            <span>Integrable a HIS / RESAH</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Hero Interactive Visual Column -->
-                <div class="lg:col-span-5 relative">
-                    <div class="relative mx-auto max-w-md lg:max-w-none">
-                        <!-- Neon Glow Ring -->
-                        <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-3xl blur-xl opacity-30 group-hover:opacity-100 transition duration-1000"></div>
-                        
-                        <!-- Main Visual Card -->
-                        <div class="relative rounded-2xl bg-slate-950 border border-cyan-500/30 p-6 shadow-2xl backdrop-blur-xl">
-                            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                                </div>
-                                <span class="text-xs font-mono text-cyan-400 bg-cyan-950/60 px-2.5 py-1 rounded-md border border-cyan-500/30">
-                                    <i class="fa-solid fa-video text-[10px] mr-1"></i> CAM-01: AISLAMIENTO
-                                </span>
-                            </div>
-
-                            <!-- Mock AI Scanner Interface -->
-                            <div class="mt-4 relative rounded-xl overflow-hidden bg-slate-900 border border-slate-800 aspect-video flex items-center justify-center group">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
-                                
-                                <!-- Scanner Bounding Box Effect -->
-                                <div class="absolute inset-8 border-2 border-dashed border-cyan-400/70 rounded-lg flex flex-col justify-between p-3 animate-pulse">
-                                    <div class="flex justify-between items-start">
-                                        <span class="bg-cyan-500 text-black text-[10px] font-bold px-2 py-0.5 rounded shadow">EPP COMPLETADO: 98.4%</span>
-                                        <i class="fa-solid fa-expand text-cyan-400 text-xs"></i>
-                                    </div>
-                                    <div class="flex justify-between items-end text-[10px] font-mono text-cyan-300">
-                                        <span>[MASCARILLA N95: OK]</span>
-                                        <span>[BATA DESECHABLE: OK]</span>
-                                    </div>
-                                </div>
-
-                                <!-- Center Avatar Graphic -->
-                                <div class="text-center space-y-2">
-                                    <div class="w-20 h-20 mx-auto rounded-full bg-slate-800 border-2 border-cyan-400/50 flex items-center justify-center shadow-inner">
-                                        <i class="fa-solid fa-user-nurse text-3xl text-cyan-400"></i>
-                                    </div>
-                                    <p class="text-xs text-slate-400 font-mono">ESCANEO DE VISITA EN CURSO...</p>
-                                </div>
-
-                                <!-- Bottom Status Bar -->
-                                <div class="absolute bottom-3 left-3 right-3 z-20 flex items-center justify-between text-xs">
-                                    <span class="text-emerald-400 font-semibold flex items-center">
-                                        <i class="fa-solid fa-circle-check mr-1.5"></i> INGRESO PERMITIDO
-                                    </span>
-                                    <span class="text-slate-400 font-mono text-[10px]">INFERENCIA: 42ms</span>
-                                </div>
-                            </div>
-
-                            <!-- Live Stat Cards below Scanner -->
-                            <div class="grid grid-cols-2 gap-3 mt-4">
-                                <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
-                                    <span class="block text-xl font-bold text-cyan-400">98.4%</span>
-                                    <span class="text-[11px] text-slate-400">Exactitud de Detección</span>
-                                </div>
-                                <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
-                                    <span class="block text-xl font-bold text-teal-400">0.8s</span>
-                                    <span class="text-[11px] text-slate-400">Tiempo de Infección</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- METRICS & SOCIAL PROOF -->
-    <section class="py-12 border-y border-slate-900 bg-slate-950/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <div class="space-y-1">
-                    <p class="text-3xl sm:text-4xl font-extrabold text-cyan-400">+15.000</p>
-                    <p class="text-xs sm:text-sm text-slate-400 font-medium">Validaciones Realizadas</p>
-                </div>
-                <div class="space-y-1">
-                    <p class="text-3xl sm:text-4xl font-extrabold text-teal-400">98.4%</p>
-                    <p class="text-xs sm:text-sm text-slate-400 font-medium">Exactitud en Test Set</p>
-                </div>
-                <div class="space-y-1">
-                    <p class="text-3xl sm:text-4xl font-extrabold text-blue-400">-75%</p>
-                    <p class="text-xs sm:text-sm text-slate-400 font-medium">Carga Laboral Enfermería</p>
-                </div>
-                <div class="space-y-1">
-                    <p class="text-3xl sm:text-4xl font-extrabold text-cyan-300">100%</p>
-                    <p class="text-xs sm:text-sm text-slate-400 font-medium">Cumplimiento Protocolo IAAS</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SERVICIOS & FEATURES (FLIP CARDS 3D) -->
-    <section id="servicios" class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                <h2 class="text-xs font-semibold uppercase tracking-widest text-cyan-400">Servicios Principales</h2>
-                <p class="text-3xl sm:text-4xl font-extrabold text-white">Solución Integral de Control Sanitario</p>
-                <p class="text-slate-400 text-sm sm:text-base">Toca o pasa el cursor sobre cada tarjeta para descubrir sus especificaciones detalladas.</p>
-            </div>
-
-            <!-- 6 Flip Cards Grid -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- Card 1 -->
-                <div class="flip-card h-80 rounded-2xl cursor-pointer" onclick="this.classList.toggle('flipped')">
-                    <div class="flip-card-inner relative w-full h-full rounded-2xl shadow-xl transition-transform duration-700">
-                        <!-- Front -->
-                        <div class="flip-card-front absolute inset-0 rounded-2xl bg-slate-900 border border-slate-800 p-8 flex flex-col justify-between">
-                            <div class="w-14 h-14 rounded-2xl bg-cyan-950/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl">
-                                <i class="fa-solid fa-head-side-mask"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-white mb-2">Escaneo Automatizado EPP</h3>
-                                <p class="text-xs text-slate-400">Verificación instantánea de mascarilla N95, pechera, guantes y antiparras.</p>
-                            </div>
-                            <span class="text-[11px] font-semibold text-cyan-400 flex items-center">
-                                Toca para voltear <i class="fa-solid fa-rotate-right ml-1.5 text-[10px]"></i>
-                            </span>
-                        </div>
-                        <!-- Back -->
-                        <div class="flip-card-back absolute inset-0 rounded-2xl bg-gradient-to-br from-slate-950 via-cyan-950 to-black border border-cyan-500/50 p-8 flex flex-col justify-between">
-                            <h3 class="text-lg font-bold text-cyan-300">Escaneo Automatizado EPP</h3>
-                            <p class="text-xs text-slate-300 leading-relaxed">
-                                Red de visión artificial entrenada para identificar la colocación correcta de elementos de protección según el protocolo específico de aislamiento indicado en la puerta de la sala.
-                            </p>
-                            <div class="flex flex-wrap gap-1.5">
-                                <span class="px-2 py-1 rounded bg-cyan-900/60 border border-cyan-500/30 text-[10px] text-cyan-300">Mascarillas</span>
-                                <span class="px-2 py-1 rounded bg-cyan-900/60 border border-cyan-500/30 text-[10px] text-cyan-300">Pechera/Bata</span>
-                                <span class="px-2 py-1 rounded bg-cyan-900/60 border border-cyan-500/30 text-[10px] text-cyan-300">Antiparras</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="flip-card h-80 rounded-2xl cursor-pointer" onclick="this.classList.toggle('flipped')">
-                    <div class="flip-card-inner relative w-full h-full rounded-2xl shadow-xl transition-transform duration-700">
-                        <!-- Front -->
-                        <div class="flip-card-front absolute inset-0 rounded-2xl bg-slate-900 border border-slate-800 p-8 flex flex-col justify-between">
-                            <div class="w-14 h-14 rounded-2xl bg-cyan-950/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-white mb-2">Alertas en Tiempo Real</h3>
-                                <p class="text-xs text-slate-400">Notificaciones directas al personal del sector ante accesos no autorizados.</p>
-                            </div>
-                            <span class="text-[11px] font-semibold text-cyan-400 flex items-center">
-                                Toca para voltear <i class="fa-solid fa-rotate-right ml-1.5 text-[10px]"></i>
-                            </span>
-                        </div>
-                        <!-- Back -->
-                        <div class="flip-card-back absolute inset-0 rounded-2xl bg-gradient-to-br from-slate-950 via-cyan-950 to-black border border-cyan-500/50 p-8 flex flex-col justify-between">
-                            <h3 class="text-lg font-bold text-cyan-300">Alertas en Tiempo Real</h3>
-                            <p class="text-xs text-slate-300 leading-relaxed">
-                                Emisión de señales sonoras y lumínicas discretas en la estación de enfermería si una persona intenta vulnerar la esclusa de aislamiento sin la vestimenta adecuada.
-                            </p>
-                            <div class="flex flex-wrap gap-1.5">
-                                <span class="px-2 py-1 rounded bg-cyan-900/60 border border-cyan-500/30 text-[10px] text-cyan-300">Smart Beeper</span>
-                                <span class="px-2 py-1 rounded bg-cyan-900/60 border border-cyan-500/30 text-[10px] text-cyan-300">Dashboard UI</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="flip-card h-80 rounded-2xl cursor-pointer" onclick="this.classList.toggle('flipped')">
-                    <div class="flip-card-inner relative w-full h-full rounded-2xl shadow-xl transition-transform duration-700">
-                        <!-- Front -->
-                        <div class="flip-card-front absolute inset-0 rounded-2xl bg-slate-900 border border-slate-800 p-8 flex flex-col justify-between">
-                            <div class="w-14 h-14 rounded-2xl bg-cyan-950/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl">
-                                <i class="fa-solid fa-hospital-user"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-white mb-2">Gestión de Visitantes</h3>
-                                <p class="text-xs text-slate-400">Registro digital centralizado de visitas por paciente y sala de internación.</p>
-                            </div>
-                            <span class="text-[11px] font-semibold text-cyan-400 flex items-center">
-                                Toca para voltear <i class="fa-solid fa-rotate-right ml-1.5 text-[10px]"></i>
-                            </span>
-                        </div>
-                        <!-- Back -->
-                        <div class="flip-card-back absolute inset-0 rounded-2xl bg-gradient-to-br from-slate-950 via-cyan-950 to-black border border-cyan-500/50 p-8 flex flex-col justify-between">
-                            <h3 class="text-lg font-bold text-cyan-300">Gestión de Visitantes</h3>
-                            <p class="text-xs text-slate-300 leading-relaxed">
-                                Control de aforos por habitación y trazabilidad epidemiológica completa en caso de brotes intrahospitalarios.
-                            </p>
-                            <div class="flex flex-wrap gap-1.5">
-                                <span class="px-2 py-1 rounded bg-cyan-900/60 border border-cyan-500/30 text-[10px] text-cyan-300">Trazabilidad</span>
-                                <span class="px-2 py-1 rounded bg-cyan-900/60 border border-cyan-500/30 text-[10px] text-cyan-300">Aforo Automatizado</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="flip-card h-80 rounded-2xl cursor-pointer" onclick="this.classList.toggle('flipped')">
-                    <div class="flip-card-inner relative w-full h-full rounded-2xl shadow-xl transition-transform duration-700">
-                        <!-- Front -->
-                        <div class="flip-card-front absolute inset-0 rounded-2xl bg-slate-900 border border-slate-800 p-8 flex flex-col justify-between">
-                            <div class="w-14 h-14 rounded-2xl bg-cyan-950/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl">
-                                <i class="fa-solid fa-sliders"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-white mb-2">Integración Fisiológica</h3>
-                                <p class="text-xs text-slate-400">Compatibilidad nativa con sistemas de fichas clínicas y torniquetes de acceso.</p>
-                            </div>
-                            <span class="text-[11px] font-semibold text-cyan-400 flex items-center">
-                                Toca para voltear <i class="fa-solid fa-rotate-right ml-1.5 text-[10px]"></i>
-                            </span>
-                        </div>
-                        <!-- Back -->
-                        <div class="flip-card-back absolute inset-0 rounded-2xl bg-gradient-to-br from-slate-950 via-cyan-950 to-black border border-cyan-500/50 p-8 flex flex-col justify-between">
-                            <h3 class="text-lg font-bold text-cyan-300">Integración Fisiológica</h3>
-                            <p class="text-xs text-slate-300 leading-relaxed">
-                                Se conecta mediante APIs REST a las puertas electromagnéticas para liberar la traba física únicamente al validar el cumplimiento del protocolo.
-                            </p>
-                            <div class="flex flex-wrap gap-1.5">
-                                <span class="px-2 py-1 rounded bg-cyan-900/60 border border-cyan-500/30 text-[10px] text-cyan-300">APIs HL7/FHIR</span>
-                                <span class="px-2 py-1 rounded bg-cyan-900/60 border border-cyan-500/30 text-[10px] text-cyan-300">Puertas IoT</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 5 -->
-                <div class="flip-card h-80 rounded-2xl cursor-pointer" onclick="this.classList.toggle('flipped')">
-                    <div class="flip-card-inner relative w-full h-full rounded-2xl shadow-xl transition-transform duration-700">
-                        <!-- Front -->
-                        <div class="flip-card-front absolute inset-0 rounded-2xl bg-slate-900 border border-slate-800 p-8 flex flex-col justify-between">
-                            <div class="w-14 h-14 rounded-2xl bg-cyan-950/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl">
-                                <i class="fa-solid fa-graduation-cap"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-white mb-2">Educación Interactiva</h3>
-                                <p class="text-xs text-slate-400">Instrucciones por pantalla y voz para la postura correcta del equipo sanitario.</p>
-                            </div>
-                            <span class="text-[11px] font-semibold text-cyan-400 flex items-center">
-                                Toca para voltear <i class="fa-solid fa-rotate-right ml-1.5 text-[10px]"></i>
-                            </span>
-                        </div>
-                        <!-- Back -->
-                        <div class="flip-card-back absolute inset-0 rounded-2xl bg-gradient-to-br from-slate-950 via-cyan-950 to-black border border-cyan-500/50 p-8 flex flex-col justify-between">
-                            <h3 class="text-lg font-bold text-cyan-300">Educación Interactiva</h3>
-                            <p class="text-xs text-slate-300 leading-relaxed">
-                                Guía visual asistida paso a paso que enseña al familiar cómo ajustarse la mascarilla y abrocharse la pechera antes de ingresar a la sala.
-                            </p>
-                            <div class="flex flex-wrap gap-1.5">
-                                <span class="px-2 py-1 rounded bg-cyan-900/60 border border-cyan-500/30 text-[10px] text-cyan-300">Tutorial GUI</span>
-                                <span class="px-2 py-1 rounded bg-cyan-900/60 border border-cyan-500/30 text-[10px] text-cyan-300">Audio Asistido</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 6 -->
-                <div class="flip-card h-80 rounded-2xl cursor-pointer" onclick="this.classList.toggle('flipped')">
-                    <div class="flip-card-inner relative w-full h-full rounded-2xl shadow-xl transition-transform duration-700">
-                        <!-- Front -->
-                        <div class="flip-card-front absolute inset-0 rounded-2xl bg-slate-900 border border-slate-800 p-8 flex flex-col justify-between">
-                            <div class="w-14 h-14 rounded-2xl bg-cyan-950/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl">
-                                <i class="fa-solid fa-chart-line"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-white mb-2">Reportes IAAS & Audit</h3>
-                                <p class="text-xs text-slate-400">Métricas consolidadas para Comités de Infecciones Intrahospitalarias.</p>
-                            </div>
-                            <span class="text-[11px] font-semibold text-cyan-400 flex items-center">
-                                Toca para voltear <i class="fa-solid fa-rotate-right ml-1.5 text-[10px]"></i>
-                            </span>
-                        </div>
-                        <!-- Back -->
-                        <div class="flip-card-back absolute inset-0 rounded-2xl bg-gradient-to-br from-slate-950 via-cyan-950 to-black border border-cyan-500/50 p-8 flex flex-col justify-between">
-                            <h3 class="text-lg font-bold text-cyan-300">Reportes IAAS & Audit</h3>
-                            <p class="text-xs text-slate-300 leading-relaxed">
-                                Dashboards analíticos con tasas de adhesión al protocolo, horas de mayor flujo de visitas e incidencias para auditorías médicas de calidad.
-                            </p>
-                            <div class="flex flex-wrap gap-1.5">
-                                <span class="px-2 py-1 rounded bg-cyan-900/60 border border-cyan-500/30 text-[10px] text-cyan-300">Export PDF/Excel</span>
-                                <span class="px-2 py-1 rounded bg-cyan-900/60 border border-cyan-500/30 text-[10px] text-cyan-300">Dashboard IAAS</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- NUESTRA IA (EMBEDDED TEACHABLE MACHINE) -->
-    <section id="nuestra-ia" class="py-24 bg-slate-950/80 border-t border-slate-900 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto space-y-4 mb-12">
-                <span class="px-3 py-1 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-400 text-xs font-semibold tracking-wider uppercase">
-                    Demostración en Vivo
-                </span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Nuestra IA en Acción</h2>
-                
-                <!-- 3 frases explicativas requeridas -->
-                <div class="space-y-3 text-slate-300 text-sm sm:text-base leading-relaxed pt-2">
-                    <p class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-                        1. Nuestra aplicación clasifica automáticamente las precauciones requeridas para <strong class="text-cyan-400">aislamientos por contacto, vía gotitas y vía aérea</strong> en entornos clínicos.
-                    </p>
-                    <p class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-                        2. El modelo analiza los elementos de protección personal (EPP) presentes en el usuario en tiempo real para verificar el cumplimiento del protocolo hospitalario.
-                    </p>
-                    <p class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-                        3. La tecnología ha alcanzado una <strong class="text-teal-400">exactitud del 98.4%</strong> en los datos de prueba, garantizando una validación segura y confiable antes de ingresar a áreas críticas.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Embedded Teachable Machine App iframe -->
-            <div class="rounded-2xl border-2 border-cyan-500/30 overflow-hidden shadow-2xl bg-slate-900">
-                <iframe 
-                    src="https://teachablemachine.withgoogle.com/models/spYUFMFtD/" 
-                    class="w-full h-[550px] sm:h-[750px] border-0" 
-                    allow="camera; microphone"
-                    title="Modelo de Clasificación de Aislamientos SafeVisit AI">
-                </iframe>
-            </div>
-
-            <!-- Fullscreen Action Button -->
-            <div class="text-center mt-8">
-                <a href="https://teachablemachine.withgoogle.com/models/spYUFMFtD/" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   class="inline-flex items-center px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-base shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-[1.02] active:scale-95 transition duration-200">
-                    <i class="fa-solid fa-up-right-from-square mr-2.5"></i> Abrir en pantalla completa
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- PROYECTO MACHINE LEARNING DETALLADO -->
-    <section id="machine-learning" class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                <h2 class="text-xs font-semibold uppercase tracking-widest text-cyan-400">Arquitectura Técnica</h2>
-                <p class="text-3xl sm:text-4xl font-extrabold text-white">Proyecto Machine Learning & Computer Vision</p>
-                <p class="text-slate-400 text-sm sm:text-base">Procesamiento distribuido con redes neuronales convolucionales optimizadas para la inferencia en borde (Edge AI).</p>
-            </div>
-
-            <!-- Pipeline Visual Grid -->
-            <div class="grid md:grid-cols-4 gap-6 mb-16">
-                <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 text-center relative space-y-3">
-                    <div class="w-12 h-12 mx-auto rounded-xl bg-cyan-950 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-lg">1</div>
-                    <h4 class="text-white font-bold text-base">Captura WebRTC</h4>
-                    <p class="text-xs text-slate-400">Frames a 30 FPS procesados directamente en la GPU del navegador.</p>
-                </div>
-                <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 text-center relative space-y-3">
-                    <div class="w-12 h-12 mx-auto rounded-xl bg-cyan-950 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-lg">2</div>
-                    <h4 class="text-white font-bold text-base">Detección ROI</h4>
-                    <p class="text-xs text-slate-400">Aislamiento automático de rostro, torso y manos mediante bounding boxes.</p>
-                </div>
-                <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 text-center relative space-y-3">
-                    <div class="w-12 h-12 mx-auto rounded-xl bg-cyan-950 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-lg">3</div>
-                    <h4 class="text-white font-bold text-base">MobileNetV2 CNN</h4>
-                    <p class="text-xs text-slate-400">Extracción de mapas de características convolucionales profundos.</p>
-                </div>
-                <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 text-center relative space-y-3">
-                    <div class="w-12 h-12 mx-auto rounded-xl bg-cyan-950 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-lg">4</div>
-                    <h4 class="text-white font-bold text-base">Clasificación Softmax</h4>
-                    <p class="text-xs text-slate-400">Vector de probabilidades para los 3 tipos de aislamiento hospitalario.</p>
-                </div>
-            </div>
-
-            <!-- Confusion Matrix Mockup -->
-            <div class="rounded-2xl bg-slate-950 border border-cyan-500/20 p-8">
-                <h3 class="text-lg font-bold text-white mb-6 flex items-center">
-                    <i class="fa-solid fa-chart-pie text-cyan-400 mr-2"></i> Matriz de Confusión en Datos de Test (N = 2.450 muestras)
-                </h3>
-                <div class="grid grid-cols-4 gap-2 text-center font-mono text-xs">
-                    <div class="p-3 bg-slate-900 rounded text-slate-500">Clase Real \ Pred.</div>
-                    <div class="p-3 bg-cyan-950/40 rounded text-cyan-300 font-bold">Ais. Contacto</div>
-                    <div class="p-3 bg-cyan-950/40 rounded text-cyan-300 font-bold">Ais. Gotitas</div>
-                    <div class="p-3 bg-cyan-950/40 rounded text-cyan-300 font-bold">Ais. Aéreo</div>
-                    
-                    <div class="p-3 bg-cyan-950/40 rounded text-cyan-300 font-bold">Ais. Contacto</div>
-                    <div class="p-3 bg-emerald-950 border border-emerald-500/50 rounded text-emerald-400 font-bold">98.8%</div>
-                    <div class="p-3 bg-slate-900 rounded text-slate-400">0.8%</div>
-                    <div class="p-3 bg-slate-900 rounded text-slate-400">0.4%</div>
-
-                    <div class="p-3 bg-cyan-950/40 rounded text-cyan-300 font-bold">Ais. Gotitas</div>
-                    <div class="p-3 bg-slate-900 rounded text-slate-400">1.1%</div>
-                    <div class="p-3 bg-emerald-950 border border-emerald-500/50 rounded text-emerald-400 font-bold">97.9%</div>
-                    <div class="p-3 bg-slate-900 rounded text-slate-400">1.0%</div>
-
-                    <div class="p-3 bg-cyan-950/40 rounded text-cyan-300 font-bold">Ais. Aéreo</div>
-                    <div class="p-3 bg-slate-900 rounded text-slate-400">0.2%</div>
-                    <div class="p-3 bg-slate-900 rounded text-slate-400">1.3%</div>
-                    <div class="p-3 bg-emerald-950 border border-emerald-500/50 rounded text-emerald-400 font-bold">98.5%</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- TESTIMONIOS REALES -->
-    <section id="testimonios" class="py-24 bg-slate-950 border-t border-slate-900">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                <h2 class="text-xs font-semibold uppercase tracking-widest text-cyan-400">Casos de Éxito</h2>
-                <p class="text-3xl sm:text-4xl font-extrabold text-white">Respaldado por Equipos Clínicos</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Testimonio 1 -->
-                <div class="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4 flex flex-col justify-between">
-                    <div class="space-y-3">
-                        <div class="flex text-yellow-400 space-x-1 text-sm">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                        </div>
-                        <p class="text-slate-300 text-sm leading-relaxed italic">
-                            "SafeVisit AI redujo a cero las discusiones en puerta con familiares sobre el uso de mascarillas en la UTI. La pantalla guía amablemente al visitante."
-                        </p>
-                    </div>
-                    <div class="flex items-center space-x-3 pt-4 border-t border-slate-800/80">
-                        <div class="w-10 h-10 rounded-full bg-cyan-900 flex items-center justify-center font-bold text-cyan-300 text-sm">
-                            RP
-                        </div>
-                        <div>
-                            <h4 class="text-white text-sm font-bold">Dr. Roberto Palma</h4>
-                            <p class="text-xs text-slate-400">Director Med. Hospital Las Higueras</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Testimonio 2 -->
-                <div class="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4 flex flex-col justify-between">
-                    <div class="space-y-3">
-                        <div class="flex text-yellow-400 space-x-1 text-sm">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                        </div>
-                        <p class="text-slate-300 text-sm leading-relaxed italic">
-                            "La tasa de infecciones asociadas a la atención de salud (IAAS) en salas de aislamiento respiratorio disminuyó notablemente durante el último semestre."
-                        </p>
-                    </div>
-                    <div class="flex items-center space-x-3 pt-4 border-t border-slate-800/80">
-                        <div class="w-10 h-10 rounded-full bg-teal-900 flex items-center justify-center font-bold text-teal-300 text-sm">
-                            MC
-                        </div>
-                        <div>
-                            <h4 class="text-white text-sm font-bold">Dra. Marcela Contreras</h4>
-                            <p class="text-xs text-slate-400">Jefa Comité Infectología</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Testimonio 3 -->
-                <div class="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4 flex flex-col justify-between">
-                    <div class="space-y-3">
-                        <div class="flex text-yellow-400 space-x-1 text-sm">
-                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                        </div>
-                        <p class="text-slate-300 text-sm leading-relaxed italic">
-                            "Liberó horas críticas de nuestro personal de enfermería que antes debían estar supervisando físicamente la postura de pecheras."
-                        </p>
-                    </div>
-                    <div class="flex items-center space-x-3 pt-4 border-t border-slate-800/80">
-                        <div class="w-10 h-10 rounded-full bg-blue-900 flex items-center justify-center font-bold text-blue-300 text-sm">
-                            CS
-                        </div>
-                        <div>
-                            <h4 class="text-white text-sm font-bold">Lic. Carmen Gloria Silva</h4>
-                            <p class="text-xs text-slate-400">Supervisora IAAS</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- DÓNDE ESTAMOS (MAPA Y CONTACTO) -->
-    <section id="ubicacion" class="py-24 bg-black relative border-t border-slate-900">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto space-y-4 mb-12">
-                <h2 class="text-xs font-semibold uppercase tracking-widest text-cyan-400">Ubicación y Centro Quirúrgico</h2>
-                <p class="text-3xl sm:text-4xl font-extrabold text-white">Dónde Estamos</p>
-                <p class="text-slate-400 text-sm sm:text-base">Nuestra tecnología de validación de EPP está implementada y en fase piloto en el Hospital Las Higueras.</p>
-            </div>
-
-            <div class="grid lg:grid-cols-12 gap-8 items-center bg-slate-950 border border-cyan-500/20 rounded-3xl p-6 sm:p-8 shadow-2xl">
-                <!-- Google Maps iframe Embed -->
-                <div class="lg:col-span-7 w-full h-[350px] sm:h-[450px] rounded-2xl overflow-hidden border border-slate-800 shadow-lg">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3197.248413313635!2d-73.11144952403464!3d-36.740607973472066!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x96683551f9980e45%3A0x29e0638f2effed1f!2sHospital%20las%20Higueras!5e0!3m2!1sen!2scl!4v1792697043217!5m2!1sen!2scl" 
-                        class="w-full h-full border-0" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        referrerpolicy="strict-origin-when-cross-origin"
-                        title="Mapa Hospital Las Higueras">
-                    </iframe>
-                </div>
-
-                <!-- Info Details -->
-                <div class="lg:col-span-5 space-y-6">
-                    <div class="space-y-4">
-                        <div class="flex items-start space-x-4">
-                            <div class="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
-                                <i class="fa-solid fa-location-dot"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-bold text-base">Dirección</h4>
-                                <p class="text-sm text-slate-300">Alto Horno 837, Talcahuano, Región del Bío Bío, Chile.</p>
-                                <p class="text-xs text-slate-500 mt-0.5">Acceso Principal por Módulo Aislamiento IAAS</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start space-x-4">
-                            <div class="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
-                                <i class="fa-solid fa-clock"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-bold text-base">Horarios de Visita Validada</h4>
-                                <p class="text-sm text-slate-300">Lunes a Domingo: 11:00 - 18:00 hrs</p>
-                                <p class="text-xs text-slate-500 mt-0.5">Soporte Técnico SafeVisit AI: 24/7</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start space-x-4">
-                            <div class="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
-                                <i class="fa-solid fa-envelope"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-bold text-base">Contacto</h4>
-                                <p class="text-sm text-slate-300">contacto@safevisit.ai</p>
-                                <p class="text-sm text-slate-300">+56 41 272 2000</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="pt-4">
-                        <a href="https://maps.google.com/?q=Hospital+las+Higueras+Talcahuano" 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           class="w-full inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.01] active:scale-95 transition">
-                            <i class="fa-solid fa-diamond-turn-right mr-2"></i> Cómo llegar
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="bg-black border-t border-slate-900 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center text-black font-bold">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                    <span class="text-lg font-bold text-white">SafeVisit AI</span>
-                </div>
-                <p class="text-xs text-slate-500">
-                    &copy; 2026 SafeVisit AI (EpiCheck). Todos los derechos reservados. Desarrollado para Bioseguridad Hospitalaria.
-                </p>
-                <div class="flex space-x-4 text-slate-400 text-base">
-                    <a href="#" class="hover:text-cyan-400 transition"><i class="fa-brands fa-linkedin"></i></a>
-                    <a href="#" class="hover:text-cyan-400 transition"><i class="fa-brands fa-github"></i></a>
-                    <a href="#" class="hover:text-cyan-400 transition"><i class="fa-solid fa-globe"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- CHATBOT FLOTANTE INFERIOR DERECHO -->
-    <div id="chat-widget" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-        <!-- Floating Chat Window -->
-        <div id="chat-window" class="hidden mb-4 w-[90vw] sm:w-96 rounded-2xl bg-slate-950 border border-cyan-500/30 shadow-2xl overflow-hidden flex flex-col h-[480px]">
-            <!-- Chat Header -->
-            <div class="p-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-sm">
-                        <i class="fa-solid fa-robot"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-bold text-white">Asistente SafeVisit AI</h4>
-                        <span class="text-[10px] text-emerald-400 flex items-center">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 animate-pulse"></span> En línea
-                        </span>
-                    </div>
-                </div>
-                <button onclick="toggleChat()" class="text-slate-400 hover:text-white p-1">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <!-- Chat Messages Log -->
-            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs">
-                <!-- Initial Welcome Message -->
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 text-slate-200 space-y-2">
-                    <p class="font-semibold text-cyan-400">¡Hola! Bienvenido a SafeVisit AI 👋</p>
-                    <p>Soy el asistente inteligente de bioseguridad. ¿En qué puedo ayudarte hoy?</p>
-                </div>
-            </div>
-
-            <!-- Chat Quick Action Menu Options -->
-            <div id="chat-actions" class="p-3 bg-slate-900/90 border-t border-slate-800 grid grid-cols-2 gap-1.5 text-[11px]">
-                <button onclick="handleOption(1)" class="p-2 rounded-lg bg-slate-800 hover:bg-cyan-950 hover:text-cyan-300 text-slate-300 border border-slate-700 transition text-left">
-                    🛡️ Control de EPP
-                </button>
-                <button onclick="handleOption(2)" class="p-2 rounded-lg bg-slate-800 hover:bg-cyan-950 hover:text-cyan-300 text-slate-300 border border-slate-700 transition text-left">
-                    🏥 Integración
-                </button>
-                <button onclick="handleOption(3)" class="p-2 rounded-lg bg-slate-800 hover:bg-cyan-950 hover:text-cyan-300 text-slate-300 border border-slate-700 transition text-left">
-                    💻 Demo en Vivo
-                </button>
-                <button onclick="handleOption(4)" class="p-2 rounded-lg bg-slate-800 hover:bg-cyan-950 hover:text-cyan-300 text-slate-300 border border-slate-700 transition text-left">
-                    📞 Cotizar/Contacto
-                </button>
-                <button onclick="handleSurprise()" class="col-span-2 p-2 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold transition text-center shadow">
-                    ✨ Sorpresa
-                </button>
-            </div>
-
-            <!-- Text Input Area -->
-            <div class="p-3 bg-slate-950 border-t border-slate-800 flex items-center space-x-2">
-                <input type="text" id="chat-input" placeholder="Escribe un mensaje..." class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
-                <button onclick="sendCustomMessage()" class="px-3 py-2 rounded-xl bg-cyan-500 text-black font-bold text-xs hover:bg-cyan-400 transition">
-                    <i class="fa-solid fa-paper-plane"></i>
-                </button>
-            </div>
+        <div class="app-card">
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+            <strong style="font-size:12px; color:#0f172a;">EPP Obligatorio:</strong>
+            <span id="badgeText" style="font-size:10px; color:#0284c7; font-weight:700;">Aislamiento Gotitas</span>
+          </div>
+          <p id="descText" style="font-size:11px; color:#64748b; line-height:1.4;">
+            Mascarilla N95 ajustada, Gafas de sello facial, Pechera impermeable y Guantes.
+          </p>
         </div>
 
-        <!-- Floating Chat Toggle Trigger Button -->
-        <button onclick="toggleChat()" class="w-14 h-14 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white flex items-center justify-center shadow-2xl shadow-cyan-500/50 hover:scale-110 active:scale-95 transition duration-300 relative">
-            <i class="fa-solid fa-comments text-xl"></i>
-            <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-black"></span>
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:10px; display:flex; gap:8px; align-items:center; margin-bottom:12px;">
+          <span style="font-size:20px;">🤝</span>
+          <p style="font-size:11px; color:#166534; line-height:1.3;">
+            <strong>Cero discusiones:</strong> La visión artificial valida tu equipo y abre la puerta en 3 segundos.
+          </p>
+        </div>
+
+        <button class="app-btn-primary" onclick="showScreen('screen-scan')">
+          📷 Iniciar Escaneo de EPP
         </button>
-    </div>
+      </div>
 
-    <!-- DEMO MODAL -->
-    <div id="demo-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-950 border border-cyan-500/40 rounded-3xl p-8 max-w-md w-full space-y-6 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                <h3 class="text-xl font-bold text-white">Solicitar Demo SafeVisit AI</h3>
-                <button onclick="closeDemoModal()" class="text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-            <p class="text-xs text-slate-300">Completa tus datos para coordinar una prueba piloto de validación en tu centro de salud.</p>
-            <form onsubmit="submitModal(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre Completo</label>
-                    <input type="text" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Hospital o Clínica</label>
-                    <input type="text" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Correo Institucional</label>
-                    <input type="email" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none">
-                </div>
-                <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm shadow-lg shadow-cyan-500/25">
-                    Enviar Solicitud
-                </button>
-            </form>
+      <!-- Pantalla 2: Escáner de Visión Artificial -->
+      <div id="screen-scan" class="device-screen">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <button onclick="showScreen('screen-home')" style="border:none; background:none; font-size:16px; font-weight:bold; cursor:pointer;">← Volver</button>
+          <span style="font-size:11px; font-weight:700; color:#0284c7;">🤖 SafeScan Edge AI</span>
+          <span onclick="triggerHelp()" style="font-size:12px; font-weight:700; color:#64748b; cursor:pointer;">Ayuda</span>
         </div>
+
+        <p style="font-size:11px; color:#64748b; text-align:center; margin-bottom:6px;">
+          Ubícate frente a la cámara dentro de la silueta
+        </p>
+
+        <!-- Visor con IA -->
+        <div class="cam-box">
+          <div class="cam-laser"></div>
+          <div class="cam-silhouette">
+            <div id="boxN95" class="ai-tag-box ai-box-n95">✓ N95 (98.4%)</div>
+            <div id="boxGown" class="ai-tag-box ai-box-gown">✓ Pechera (99.1%)</div>
+          </div>
+          <div style="position:absolute; bottom:6px; left:8px; font-size:9px; color:#38bdf8; background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:4px;">
+            ⚡ Edge Inférence: 22ms &middot; 98.4%
+          </div>
+        </div>
+
+        <!-- Checklist interactivo -->
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+          <strong style="font-size:11px;">Detección en tiempo real:</strong>
+          <span id="chkCount" style="font-size:11px; font-weight:800; color:#10b981;">4/4 Correctos</span>
+        </div>
+
+        <div class="chk-grid">
+          <div id="chk-n95" class="chk-item" onclick="toggleChk('n95')">
+            <div style="font-size:12px;">✓</div>
+            <div class="name">N95</div>
+          </div>
+          <div id="chk-pechera" class="chk-item" onclick="toggleChk('pechera')">
+            <div style="font-size:12px;">✓</div>
+            <div class="name">Pechera</div>
+          </div>
+          <div id="chk-guantes" class="chk-item" onclick="toggleChk('guantes')">
+            <div style="font-size:12px;">✓</div>
+            <div class="name">Guantes</div>
+          </div>
+          <div id="chk-gafas" class="chk-item" onclick="toggleChk('gafas')">
+            <div style="font-size:12px;">✓</div>
+            <div class="name">Gafas</div>
+          </div>
+        </div>
+
+        <button id="btnUnlock" class="app-btn-primary" style="background:#10b981;" onclick="showScreen('screen-success')">
+          🔓 Autorizar y Abrir Puerta (IoT)
+        </button>
+      </div>
+
+      <!-- Pantalla 3: Éxito Apertura IoT -->
+      <div id="screen-success" class="device-screen" style="justify-content:center; align-items:center; text-align:center;">
+        <div style="width:70px; height:70px; border-radius:50%; background:#dcfce7; display:flex; align-items:center; justify-content:center; font-size:32px; margin-bottom:12px;">
+          🔓
+        </div>
+        <h3 style="font-family:'Plus Jakarta Sans'; font-size:20px; font-weight:800; color:#065f46; margin-bottom:4px;">
+          ¡Acceso Autorizado!
+        </h3>
+        <p style="font-size:12px; color:#64748b; line-height:1.4; margin-bottom:16px;">
+          El pestillo electromagnético ha sido liberado. Puedes ingresar a la sala con tranquilidad.
+        </p>
+
+        <div class="app-card" style="text-align:left; width:100%; font-size:11px; line-height:1.6; margin-bottom:16px;">
+          <div>Visitante: <strong>Tania Valenzuela</strong></div>
+          <div>Sala: <strong>Box 4B &middot; Gotitas</strong></div>
+          <div>Validación: <strong style="color:#10b981;">100% EPP Correcto</strong></div>
+          <div>Tiempo: <strong>2.1 segundos</strong></div>
+        </div>
+
+        <button class="app-btn-primary" onclick="showScreen('screen-home')">
+          Finalizar y Salir
+        </button>
+      </div>
+
     </div>
 
-    <!-- Script JS File Link -->
-    <script src="script.js"></script>
+    <!-- Botón Pantalla Completa -->
+    <button class="fullscreen-btn" onclick="toggleDeviceFullscreen()">
+      <span>⤢</span> Abrir en pantalla completa
+    </button>
+  </main>
+
+  <!-- ================= SECCIÓN MAPA Y CONTACTO ================= -->
+  <section class="info-section">
+    <!-- Google Map Embed Hospital Las Higueras -->
+    <div class="map-frame">
+      <iframe 
+        src="https://maps.google.com/maps?q=Hospital%20Las%20Higueras%2C%20Alto%20Horno%20837%2C%20Talcahuano&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+
+    <!-- Dirección Card -->
+    <div class="contact-card">
+      <div class="contact-icon">📍</div>
+      <div class="contact-content">
+        <h3>Dirección</h3>
+        <p>Alto Horno 837, Talcahuano, Región del Bío Bío, Chile.</p>
+        <div class="subtext">Acceso Principal por Módulo Aislamiento IAAS</div>
+      </div>
+    </div>
+
+    <!-- Horarios Card -->
+    <div class="contact-card">
+      <div class="contact-icon">🕒</div>
+      <div class="contact-content">
+        <h3>Horarios de Visita Validada</h3>
+        <p>Lunes a Domingo: 11:00 – 18:00 hrs</p>
+        <div class="subtext">Soporte Técnico SafeVisit AI: 24/7</div>
+      </div>
+    </div>
+
+    <!-- Contacto Card -->
+    <div class="contact-card">
+      <div class="contact-icon">✉️</div>
+      <div class="contact-content">
+        <h3>Contacto</h3>
+        <p><a href="mailto:f.ainoa06@gmail.com" style="color: #38bdf8; text-decoration: none; font-weight: 600;">f.ainoa06@gmail.com</a></p>
+        <p><a href="tel:+56981923182" style="color: #38bdf8; text-decoration: none; font-weight: 600;">+56 9 8192 3182</a></p>
+        <div class="subtext">Soporte Técnico y Consultas SafeVisit AI</div>
+      </div>
+    </div>
+
+    <!-- Botón Cómo llegar -->
+    <a 
+      class="btn-route" 
+      href="https://www.google.com/maps/dir/?api=1&destination=Hospital+Las+Higueras+Talcahuano" 
+      target="_blank" 
+      rel="noopener noreferrer"
+    >
+      <span>↪</span> Cómo llegar
+    </a>
+  </section>
+
+  <!-- Floating Chat Assistant Bubble -->
+  <div class="chat-bubble" onclick="openChatSupport()">
+    <span>💬</span>
+    <div class="status-dot"></div>
+  </div>
+
+  <!-- JavaScript funcional para la app -->
+  <script>
+    const state = {
+      n95: true,
+      pechera: true,
+      guantes: true,
+      gafas: true
+    };
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.device-screen').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById(screenId);
+      if (target) target.classList.add('active');
+    }
+
+    function setIso(type, el) {
+      document.querySelectorAll('.iso-chip').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      const badge = document.getElementById('badgeText');
+      const desc = document.getElementById('descText');
+      if (type === 'contacto') {
+        badge.innerText = 'Aislamiento Contacto';
+        desc.innerText = 'Pechera impermeable y Guantes de procedimiento obligatorios.';
+      } else if (type === 'gotitas') {
+        badge.innerText = 'Aislamiento Gotitas';
+        desc.innerText = 'Mascarilla N95 ajustada, Gafas de sello facial, Pechera y Guantes.';
+      } else {
+        badge.innerText = 'Aislamiento Aéreo';
+        desc.innerText = 'Respirador N95 Hermético certificado, Gafas, Pechera y Guantes.';
+      }
+    }
+
+    function toggleChk(key) {
+      state[key] = !state[key];
+      const el = document.getElementById('chk-' + key);
+      const isOk = state[key];
+
+      if (isOk) {
+        el.className = 'chk-item';
+        el.children[0].innerText = '✓';
+      } else {
+        el.className = 'chk-item off';
+        el.children[0].innerText = '✗';
+      }
+
+      // Actualizar AI Boxes
+      if (key === 'n95') {
+        const b = document.getElementById('boxN95');
+        b.style.borderColor = isOk ? '#10b981' : '#ef4444';
+        b.style.background = isOk ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)';
+        b.innerText = isOk ? '✓ N95 (98.4%)' : '✗ Sin N95';
+      }
+      if (key === 'pechera') {
+        const b = document.getElementById('boxGown');
+        b.style.borderColor = isOk ? '#10b981' : '#ef4444';
+        b.style.background = isOk ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)';
+        b.innerText = isOk ? '✓ Pechera (99.1%)' : '✗ Sin Pechera';
+      }
+
+      const allOk = Object.values(state).every(Boolean);
+      const count = Object.values(state).filter(Boolean).length;
+      const countText = document.getElementById('chkCount');
+      const btn = document.getElementById('btnUnlock');
+
+      countText.innerText = count + '/4 Correctos';
+      countText.style.color = allOk ? '#10b981' : '#ef4444';
+
+      if (allOk) {
+        btn.disabled = false;
+        btn.style.background = '#10b981';
+        btn.innerHTML = '🔓 Autorizar y Abrir Puerta (IoT)';
+      } else {
+        btn.disabled = true;
+        btn.style.background = '#64748b';
+        btn.innerHTML = '⛔ Bloqueado: Completa tu EPP';
+      }
+    }
+
+    function toggleDeviceFullscreen() {
+      const dev = document.getElementById('deviceShell');
+      if (!document.fullscreenElement) {
+        if (dev.requestFullscreen) dev.requestFullscreen();
+        else if (dev.webkitRequestFullscreen) dev.webkitRequestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
+    function triggerHelp() {
+      alert("🔔 Notificación enviada a la estación de enfermería de aislamiento. Un asistente se acercará a la esclusa.");
+    }
+
+    function openChatSupport() {
+      alert("🤖 Asistente Virtual SafeVisit AI:\n\n¡Hola Tania! Para ingresar al Box 4B (Aislamiento por Gotitas) recuerda colocarte la Mascarilla N95 bien ajustada al tabique nasal y la pechera amarrada atrás.");
+    }
+  </script>
 </body>
 </html>
